@@ -1,4 +1,39 @@
 
+#  Resource Group Name
+variable "resource_group" {
+  type    = string
+  default = "RG-demostan-21"
+}
+
+# Azure Traffic ManagerProfile name
+variable "trafficmanagerprofile_name" {
+  type    = string
+  default = "TMprofile"
+}
+
+# Azure Traffic ManagerProfile relative name 
+variable "trafficmanagerrelative_name" {
+  type    = string
+  default = "standemo2021"
+}
+
+# External endpoint green
+variable "endpoint_green_name" {
+  type    = string
+  default = "aks-green.standemo.com"
+}
+
+# External endpoint blue
+variable "endpoint_blue_name" {
+  type    = string
+  default = "aks-blue.standemo.com"
+}
+
+
+
+
+
+
 # Traffic Manager Profile
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/traffic_manager_profile
 
@@ -43,9 +78,9 @@ resource "azurerm_traffic_manager_endpoint" "Terra-TMEndpointGreen" {
   name                = "aks-green"
   resource_group_name = var.resource_group
   profile_name        = var.trafficmanagerprofile_name
-  target              = "aks-green.standemo.com"
+  target              = var.endpoint_green_name
   type                = "externalEndpoints"
-  weight              = 1
+  weight              = 3
   depends_on = [time_sleep.wait_30_seconds]
 }
 
@@ -57,7 +92,7 @@ resource "azurerm_traffic_manager_endpoint" "Terra-TMEndpointBlue" {
   name                = "aks-blue"
   resource_group_name = var.resource_group
   profile_name        = var.trafficmanagerprofile_name
-  target              = "aks-blue.standemo.com"
+  target              = var.endpoint_blue_name
   type                = "externalEndpoints"
   weight              = 2
   depends_on = [time_sleep.wait_30_seconds]

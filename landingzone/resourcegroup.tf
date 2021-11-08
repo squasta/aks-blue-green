@@ -7,6 +7,17 @@
 #                                                                                                     | |    
 #                                                                                                     |_|    
 
+variable "resource_group" {
+    type = string
+    default = "RG-DEMO-NOV-21"
+}
+
+variable "azure_region" {
+    type = string
+    default = "westeurope"
+}
+
+
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group
 resource "azurerm_resource_group" "Terra_aks_rg" {
   name     = var.resource_group

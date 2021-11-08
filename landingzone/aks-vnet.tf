@@ -8,6 +8,13 @@
 #      \/   |_|_|   \__|\__,_|\__,_|_|  |_| \_|\___|\__| \_/\_/ \___/|_|  |_|\_\   \__,_|_| |_|\__,_|  |_____/ \__,_|_.__/|_| |_|\___|\__|___/                                                                                                                                     
                                                                                                                                           
 
+variable "aks_vnet_name" {
+    type = string
+    default = "aksvnet"
+}
+
+
+
 resource "azurerm_virtual_network" "Terra_aks_vnet" {
   name                = var.aks_vnet_name
   resource_group_name = azurerm_resource_group.Terra_aks_rg.name
@@ -32,6 +39,18 @@ resource "azurerm_subnet" "Terra_aks_subnet" {
   virtual_network_name = azurerm_virtual_network.Terra_aks_vnet.name
   address_prefixes     = ["10.240.0.0/16"]
 }
+
+
+# Associates a NAT Gateway with a Subnet within a Virtual Network.
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
+
+resource "azurerm_subnet_nat_gateway_association" "Terra-associate-akssubnet-natgw" {
+  subnet_id      = azurerm_subnet.Terra_aks_subnet.id
+  nat_gateway_id = azurerm_nat_gateway.Terra-NATGW.id
+}
+
+
+
 
 # # Role Assignment to give AKS the access to AKS subnet
 # # cf. https://docs.microsoft.com/en-us/azure/aks/kubernetes-service-principal#delegate-access-to-other-azure-resources
